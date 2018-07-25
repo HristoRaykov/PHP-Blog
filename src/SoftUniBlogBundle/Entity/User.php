@@ -4,6 +4,7 @@ namespace SoftUniBlogBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use SoftUniBlogBundle\SoftUniBlogBundle;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -43,11 +44,18 @@ class User implements UserInterface
      * @ORM\Column(name="password", type="string", length=255)
      */
     private $password;
+	
+	/**
+	 * @var ArrayCollection
+	 *
+	 * @ORM\OneToMany(targetEntity="SoftUniBlogBundle\Entity\Article", mappedBy="author")
+	 */
+    private $articles;
 
 
     public function __construct()
     {
-
+		$this->articles = new ArrayCollection();
     }
 
 
@@ -191,6 +199,23 @@ class User implements UserInterface
     {
         return $this->fullName;
     }
-
+	
+	/**
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getArticles()
+	{
+		return $this->articles;
+	}
+	
+	/**
+	 * @param \SoftUniBlogBundle\Entity\Article $article
+	 * @return User
+	 */
+	public function addPost(Article $article){
+		$this->articles[]=$article;
+		
+		return $this;
+	}
 }
 
